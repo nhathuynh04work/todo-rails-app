@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  has_many :projects, dependent: :destroy
+  has_many :tasks, through: :projects
+
   normalizes :first_name, with: ->(first_name) { first_name.strip.titleize }
   normalizes :last_name, with: ->(last_name) { last_name.strip.titleize }
   normalizes :email, with: ->(email) { email.strip.downcase }
