@@ -4,15 +4,18 @@ class SessionsController < ApplicationController
   end
 
   def create
-    @user = User.find_by(email: params[:email])
-
-    if @user.authenticate_by(email: params[:email], password: params[:password])
-      session[:user_id] = @user.id
+    if user = User.authenticate_by(email: params[:email], password: params[:password])
+      session[:user_id] = user.id
       redirect_to dashboard_url, notice: "Login successfully!"
     else
-      flash[:alert] = "Invalid email/password"
+      flash.now[:alert] = "Invalid email/password"
       render "new", status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    reset_session
+    redirect_to login_url, notice: "Logged out"
   end
 
   private
