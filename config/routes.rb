@@ -7,6 +7,6 @@ Rails.application.routes.draw do
   get "/login", to: "sessions#new", as: :login
   post "/login", to: "sessions#create"
 
-  resources :dashboard, only: [ :show ]
+  resource :dashboard, only: [ :show ]
   root "static_pages#home"
 end
