@@ -1,4 +1,4 @@
-<%= link_to "#", id: dom_id(project), class: "group flex items-center px-3 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-colors truncate" do %>
+<%= link_to project, data: { turbo_frame: "main_content", turbo_action: "advance" }, id: dom_id(project), class: "group flex items-center px-3 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-colors truncate" do %>
   <span class="text-gray-600 group-hover:text-gray-500 mr-3">#</span>
   <span class="truncate"><%= project.title %></span>
 <% end %>

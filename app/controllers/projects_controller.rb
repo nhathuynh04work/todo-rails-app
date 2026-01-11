@@ -1,7 +1,14 @@
 class ProjectsController < ApplicationController
   before_action :require_authentication
+  before_action :set_project, only: [ :show ]
+  layout "dashboard"
+
   def new
     @project = Project.new
+
+    if turbo_frame_request?
+      render layout: false
+    end
   end
 
   def create
@@ -15,5 +22,13 @@ class ProjectsController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def show
+  end
+
+  private
+  def set_project
+    @project = current_user.projects.find(params[:id])
   end
 end
