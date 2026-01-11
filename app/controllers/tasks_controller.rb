@@ -1,72 +1,41 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy ]
+  before_action :require_authentication
+  before_action :set_project
 
-  enum :status, { incomplete: 0, complete: 1 }
-
-  # GET /tasks or /tasks.json
-  def index
-    @tasks = Task.all
-  end
-
-  # GET /tasks/1 or /tasks/1.json
-  def show
-  end
-
-  # GET /tasks/new
   def new
-    @task = Task.new
+    render partial: "tasks/task_create_ui", locals: { project: @project, open: true }
   end
 
-  # GET /tasks/1/edit
-  def edit
-  end
-
-  # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    @task = @project.tasks.new(task_params)
 
-    respond_to do |format|
-      if @task.save
-        format.html { redirect_to @task, notice: "Task was successfully created." }
-        format.json { render :show, status: :created, location: @task }
-      else
+    if @task.save
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to project_path(@project) }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = "Missing title for task"
+
+          render turbo_stream: [
+            turbo_stream.update("flash", partial: "shared/flash"),
+            turbo_stream.replace("new_task_ui", partial: "tasks/task_create_ui", locals: { project: @project, open: true })
+          ]
+        end
+
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
       end
-    end
-  end
-
-  # PATCH/PUT /tasks/1 or /tasks/1.json
-  def update
-    respond_to do |format|
-      if @task.update(task_params)
-        format.html { redirect_to @task, notice: "Task was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @task }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /tasks/1 or /tasks/1.json
-  def destroy
-    @task.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to tasks_path, notice: "Task was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_task
-      @task = Task.find(params.expect(:id))
-    end
+  def set_project
+    @project = current_user.projects.find(params[:project_id])
+  end
 
-    # Only allow a list of trusted parameters through.
-    def task_params
-      params.expect(task: [ :title, :status ])
-    end
+  def task_params
+    params.expect(task: [ :title ])
+  end
 end

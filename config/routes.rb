@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :projects, only: [ :new, :create, :show ]
-  resources :tasks
+  resources :tasks, only: [ :new, :create ]
 
   get "/signup", to: "registrations#new", as: :signup
   post "/signup", to: "registrations#create"
