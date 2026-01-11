@@ -1,19 +1,10 @@
 <div>
-  <div class="px-3 mb-2 flex items-center justify-between">
-    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Projects</h3>
-    <button class="text-gray-500 hover:text-indigo-400 transition-colors">
-      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-    </button>
-  </div>
-  <div class="space-y-1">
+  <%= render "projects/sidebar_ui", open: false %>
+  <div id="projects_list" class="space-y-1">
     <% if current_user.projects.any? %>
-      <% current_user.projects.order(:title).each do |project| %>
-        <%= link_to project.title, "#", class: "block px-3 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-900 rounded-lg transition-colors truncate" %>
-      <% end %>
+      <%= render current_user.projects.order(:title) %>
     <% else %>
-      <div class="px-3 text-sm text-gray-600 italic">No projects yet</div>
+      <div id="no_projects_msg" class="px-3 text-sm text-gray-600 italic">No projects yet</div>
     <% end %>
   </div>
 </div>

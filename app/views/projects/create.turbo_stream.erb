@@ -1,0 +1,5 @@
+<%= turbo_stream.append "projects_list", partial: "projects/project", locals: { project: @project } %>
+<%= turbo_stream.replace "project_sidebar_ui" do %>
+  <%= render "projects/sidebar_ui", open: true %>
+<% end %>
+<%= turbo_stream.remove "no_projects_msg" %>

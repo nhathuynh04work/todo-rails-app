@@ -1,27 +1,18 @@
-<%= form_with(model: project, class: "contents") do |form| %>
-  <% if project.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
-
-      <ul class="list-disc ml-6">
-        <% project.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<%= turbo_frame_tag "new_project_form" do %>
+  <%= form_with(model: project, class: "px-3 mb-2") do |f| %>
+    <div class="relative">
+      <%= f.text_field :title, 
+          placeholder: "Project name...", 
+          class: "w-full bg-gray-900 text-white text-sm border border-indigo-500 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-gray-600",
+          autofocus: true,
+          autocomplete: "off",
+          data: { action: "keydown.esc->turbo-frame#remove" } 
+      %>
+      <%= f.submit class: "hidden" %>
+    </div>
+    <div class="flex justify-end mt-1">
+      <%= link_to "Cancel", dashboard_path, class: "text-xs text-gray-500 hover:text-gray-300", 
+                                            data: { turbo_frame: "project_sidebar_ui" } %>
     </div>
   <% end %>
-
-  <div class="my-5">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": project.errors[:user_id].none?, "border-red-400 focus:outline-red-600": project.errors[:user_id].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :title %>
-    <%= form.text_field :title, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": project.errors[:title].none?, "border-red-400 focus:outline-red-600": project.errors[:title].any?}] %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
-  </div>
 <% end %>

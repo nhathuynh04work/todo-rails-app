@@ -1,0 +1,21 @@
+<%= turbo_frame_tag "project_sidebar_ui" do %>
+  <div class="px-3 mb-2 flex items-center justify-between">
+    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Projects</h3>
+    <% if local_assigns[:open] %>
+      <%= link_to dashboard_path, class: "text-indigo-400 hover:text-indigo-300 transition-colors" do %>
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      <% end %>
+    <% else %>
+      <%= link_to new_project_path, class: "text-gray-500 hover:text-indigo-400 transition-colors" do %>
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      <% end %>
+    <% end %>
+  </div>
+  <% if local_assigns[:open] %>
+    <%= render "projects/form", project: Project.new %>
+  <% end %>
+<% end %>

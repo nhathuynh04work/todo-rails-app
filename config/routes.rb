@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :projects
+  resources :projects, only: [ :new, :create ]
   resources :tasks
 
   get "/signup", to: "registrations#new", as: :signup
