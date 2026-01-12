@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   before_action :require_authentication
   before_action :set_project, only: %w[ new create ]
-  before_action :set_task, only: %w[ toggle ]
+  before_action :set_task, only: %w[ toggle destroy ]
 
   def new
     render partial: "tasks/task_create_ui", locals: { project: @project, open: true }
@@ -44,6 +44,20 @@ class TasksController < ApplicationController
       end
     else
       redirect_to project_path(@task.project), alert: "Could not update task."
+    end
+  end
+
+  def destroy
+    if @task.destroy
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.remove(@task)
+        end
+
+        format.html { redirect_to project_path(@task.project) }
+      end
+    else
+      redirect_to project_path(@task.project), alert: "Could not delete task."
     end
   end
 

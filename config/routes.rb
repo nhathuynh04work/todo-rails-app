@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :projects, only: [ :new, :create, :show ]
-  resources :tasks, only: [ :new, :create ] do
+  resources :tasks, only: [ :new, :create, :destroy ] do
     member do
       post :toggle
     end
