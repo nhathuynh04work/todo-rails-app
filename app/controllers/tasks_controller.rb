@@ -12,7 +12,14 @@ class TasksController < ApplicationController
 
     if @task.save
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.append("tasks_list", partial: "tasks/task", locals: { task: @task }),
+            turbo_stream.replace("new_task_ui", partial: "tasks/task_create_ui", locals: { project: @project, open: true }),
+            turbo_stream.remove("no_tasks_msg"),
+            update_sidebar_count_stream
+          ]
+        end
         format.html { redirect_to project_path(@project) }
       end
     else
@@ -22,7 +29,8 @@ class TasksController < ApplicationController
 
           render turbo_stream: [
             turbo_stream.update("flash", partial: "shared/flash"),
-            turbo_stream.replace("new_task_ui", partial: "tasks/task_create_ui", locals: { project: @project, open: true })
+            turbo_stream.replace("new_task_ui", partial: "tasks/task_create_ui", locals: { project: @project, open: true }),
+            update_sidebar_count_stream
           ]
         end
 
@@ -37,7 +45,10 @@ class TasksController < ApplicationController
     if @task.update(status: new_status)
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(@task, partial: "tasks/task", locals: { task: @task })
+          render turbo_stream: [
+            turbo_stream.replace(@task, partial: "tasks/task", locals: { task: @task }),
+            update_sidebar_count_stream
+          ]
         end
 
         format.html { redirect_to project_path(@task.project) }
@@ -51,7 +62,10 @@ class TasksController < ApplicationController
     if @task.destroy
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.remove(@task)
+          render turbo_stream: [
+            turbo_stream.remove(@task),
+            update_sidebar_count_stream
+          ]
         end
 
         format.html { redirect_to project_path(@task.project) }
@@ -68,9 +82,18 @@ class TasksController < ApplicationController
 
   def set_task
     @task = current_user.tasks.find(params[:id])
+    @project = @task.project
   end
 
   def task_params
     params.expect(task: [ :title ])
+  end
+
+  def update_sidebar_count_stream
+    turbo_stream.replace(
+      @project,
+      partial: "projects/project",
+      locals: { project: @project.reload }
+    )
   end
 end

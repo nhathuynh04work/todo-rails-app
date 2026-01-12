@@ -1,4 +1,0 @@
-<%= turbo_stream.append "tasks_list", partial: "tasks/task", locals: { task: @task } %>
-<%= turbo_stream.replace "new_task_ui" do %>
-  <%= render "tasks/task_create_ui", project: @project, open: true %>
-<% end %>

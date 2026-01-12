@@ -6,9 +6,10 @@
     <span class="truncate"><%= project.title %></span>
   <% end %>
   <div class="flex items-center justify-center min-w-4">
-    <% if project.tasks.size > 0 %>
+    <% incomplete_count = project.incomplete_tasks_count %>
+    <% if incomplete_count > 0 %>
       <span class="text-xs text-gray-600 group-hover:hidden font-mono">
-        <%= project.tasks.size %>
+        <%= incomplete_count %>
       </span>
     <% end %>
     <div class="hidden group-hover:block">
