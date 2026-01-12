@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resources :projects, only: [ :new, :create, :show ]
-  resources :tasks, only: [ :new, :create ]
+  resources :tasks, only: [ :new, :create ] do
+    member do
+      post :toggle
+    end
+  end
 
   get "/signup", to: "registrations#new", as: :signup
   post "/signup", to: "registrations#create"
